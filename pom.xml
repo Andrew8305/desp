@@ -8,4 +8,8 @@
 	</parent>
 	<artifactId>desp</artifactId>
 	<packaging>pom</packaging>
+	<modules>
+		<module>desp-console</module>
+		<module>desp-agent</module>
+	</modules>
 </project>

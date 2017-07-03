@@ -1,2 +1,10 @@
 /.project
 /.settings
+/desp-agent/.project
+/desp-agent/.settings
+/desp-agent/target
+/desp-agent/.classpath
+/desp-console/.project
+/desp-console/.settings
+/desp-console/target
+/desp-console/.classpath

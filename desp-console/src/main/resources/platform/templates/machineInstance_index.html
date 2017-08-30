@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>物理机实例</title>
+  ${jsContext}${appJs}${jquery}${bootstrap}${jqueryUI}${jqGrid}${vue}${ele}${pnotify}
+  <script type="text/javascript" src="${request.contextPath}/js/machineInstance_index.js"></script>
+	<link rel="stylesheet" href="${request.contextPath}/css/global.css">
+</head>
+<body>
+	<div id="app">
+		<el-row>
+			<el-col :span="4">
+				<h5 class="tool-title">
+					物理机实例
+				</h5>
+			</el-col>
+			<el-col :span="10" offset="10">
+				<div class="float-right">
+					<el-button type="primary" @click="add" size="small" icon="plus">新增</el-button>
+					<el-button size="small" @click="compositeSearch">检索</el-button>
+					<el-button size="small" @click="refreshPage" v-loading.fullscreen.lock="fullscreenLoading">刷新</el-button>
+				</div>
+			</el-col>
+		</el-row>
+		
+		<div class="split-line"></div>
+		
+		<el-row>
+			<el-form ref="toolBarForm" :model="toolBarForm" :inline="true">
+				<el-col :span="3">
+				  		<el-form-item>
+							<el-select v-model="toolBarForm.condition" size="small"  placeholder="搜索条件">
+								<el-option label="实例名称" value="machineInstanceName"></el-option>
+								<el-option label="外网IP" value="outterIP"></el-option>
+								<el-option label="内网IP" value="innerIP"></el-option>
+
+							</el-select>
+						</el-form-item>
+				</el-col>
+				<el-col :span="4">
+					<el-form-item>
+						<el-input v-model="toolBarForm.value" onkeyup="if(arguments[0].keyCode == 13)commonSearch();" size="small"></el-input>
+					</el-form-item>
+				</el-col>
+			</el-form>
+			<el-col :span="13">
+				<el-button icon="search" size="small" @click="commonSearch" type="primary">搜索</el-button>
+				<el-button icon="edit" size="small" @click="edit">编辑</el-button>
+				<el-button icon="delete" size="small" @click="del" type="danger" :plain="true">删除</el-button>
+				<el-button size="small" @click="exp">导出</el-button>
+			</el-col>
+			<el-col :span="1" offset="3">
+				<div class="float-right">
+					<el-button icon="setting" size="small" @click="selectGridColumn"></el-button>
+				</div>
+			</el-col>
+		</el-row>
+		<el-row>
+	  		<el-col :span="24">
+	  			<div>
+	  				<table id="list"></table>
+					<div id="pager"></div>
+				</div>
+	  		</el-col>
+		</el-row>
+	
+		<el-dialog title="详细信息" size="large" v-model="dialogFormVisible" lock-scroll @close="resetForm">
+			<el-form ref="form" :rules="formRules" :model="form" label-width="80px">
+				
+				<el-row>
+					<el-col :span="24">
+						<el-form-item label="实例名称" prop="machineInstanceName">
+							<el-input v-model="form.machineInstanceName" size="small" placeholder="请输入实例名称"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="外网IP" prop="outterIP">
+							<el-input v-model="form.outterIP" size="small" placeholder="请输入外网IP"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="内网IP" prop="innerIP">
+							<el-input v-model="form.innerIP" size="small" placeholder="请输入内网IP"></el-input>
+						</el-form-item>
+					</el-col>	
+				</el-row>
+				
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="cpu/内存" prop="cpuAndMemory">
+							<el-input v-model="form.cpuAndMemory" size="small" placeholder="请输入cpu/内存"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="mac地址" prop="macAddress">
+							<el-input v-model="form.macAddress" size="small" placeholder="请输入mac地址"></el-input>
+						</el-form-item>
+					</el-col>	
+				</el-row>
+				
+			</el-form> 
+			<div slot="footer" class="dialog-footer">
+				<el-button type="primary" size="small" @click="onSubmit">{{submitBtnName}}</el-button>
+				<el-button size="small" @click="resetForm">取消</el-button>
+			</div>
+		</el-dialog>
+			
+		<el-dialog title="列表显示列" v-model="dialogGridSelectionVisible" lock-scroll>
+			<div class="col-sm-12">
+				<div class="grid-column-checkbox" v-for="col in checkboxCols">
+					 <el-checkbox v-model="col.visible">{{col.name}}</el-checkbox>
+				</div>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="dialogGridSelectionVisible = false">取 消</el-button>
+				<el-button type="primary" @click="saveColVisible" size="small" >确 定</el-button>
+			</div>
+		</el-dialog>
+
+	</div>
+  
+</body>
+
+</html>

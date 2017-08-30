@@ -11,5 +11,6 @@
 	<modules>
 		<module>desp-console</module>
 		<module>desp-agent</module>
+		<module>desp-commons</module>
 	</modules>
 </project>

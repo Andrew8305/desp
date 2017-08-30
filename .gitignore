@@ -8,3 +8,10 @@
 /desp-console/.settings
 /desp-console/target
 /desp-console/.classpath
+/desp-console/logs
+/desp-console/data
+/desp-commons/.project
+/desp-commons/.settings
+/desp-commons/.classpath
+/desp-agent/logs
+/desp-agent/data

@@ -4,6 +4,8 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -11,17 +13,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class ZKConnector implements InitializingBean{
 
+	private final static Logger LOG = LoggerFactory.getLogger(ZKConnector.class);
+	
 	private CuratorFramework client;
 	
-	@Value("${zookeeper.address:127.0.0.1:2181}")
+	@Value("${desp.zookeeper.address:127.0.0.1:2181}")
 	private String address;
-	@Value("${zookeeper.sessionTimeoutMs:5000}")
+	@Value("${desp.zookeeper.sessionTimeoutMs:5000}")
 	private int sessionTimeoutMs;
-	@Value("${zookeeper.connectionTimeoutMs:3000}")
+	@Value("${desp.zookeeper.connectionTimeoutMs:3000}")
 	private int connectionTimeoutMs;
-	@Value("${zookeeper.retryBaseSleepTimeMs :3}")
+	@Value("${desp.zookeeper.retryBaseSleepTimeMs :3}")
 	private int retryBaseSleepTimeMs;
-	@Value("${zookeeper.maxRetries:3}")
+	@Value("${desp.zookeeper.maxRetries:3}")
 	private int maxRetries;
 
 	public void close(){
@@ -42,6 +46,7 @@ public class ZKConnector implements InitializingBean{
 		 					.retryPolicy(retryPolicy)
 		 					.build();
 		 client.start();
+		 LOG.info("连接zookeeper成功, 地址：" + address);
 	}
 	
 	

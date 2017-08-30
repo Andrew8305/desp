@@ -14,13 +14,10 @@ $(function(){
 					value: "",
 					condition: ""
 				},//top工具form数据
-				form: {machineInstanceName:null,cpuAndMemory:null,agentVersion:null,outterIP:null,innerIP:null,agentStatus:null,macAddress:null},
+				form: {machineInstanceName:null,cpuAndMemory:null,agentVersion:null,outterIP:null,innerIP:null,agentStatus:null},
 		        formRules: {
 					machineInstanceName:[
 						{ required: 'true', message: '请输入实例名称', trigger: 'change' }
-					],
-					macAddress:[
-						{ required: 'true', message: '请输入mac地址', trigger: 'change' }
 					],
 					innerIP:[
 						{ required: 'true', message: '请输入内网IP', trigger: 'change' }
@@ -103,7 +100,7 @@ $(function(){
 			resetForm: function(){
 				this.dialogFormVisible = false;
 				this.$refs['form'].resetFields();
-				this.form = {machineInstanceName:null,cpuAndMemory:null,agentVersion:null,outterIP:null,innerIP:null,agentStatus:null,macAddress:null};
+				this.form = {machineInstanceName:null,cpuAndMemory:null,agentVersion:null,outterIP:null,innerIP:null,agentStatus:null};
 			},
 			onSubmit: function(){//弹出表单的提交
 				var context = this;
@@ -168,16 +165,15 @@ $(function(){
         height:300,
         mtype: "GET",
         multiselect: true,
-        colNames: ['ID','实例名称','CPU/内存','内网IP','外网IP', 'mac地址', 'agent版本','agent状态','创建时间'],
+        colNames: ['ID','实例名称','CPU/内存','内网IP','外网IP', 'agent版本','agent状态','创建时间'],
         colModel: [
 			{ name: 'id', index:'id',hidden: true},
 			{ name: 'machineInstanceName', index:'machineInstanceName', align:'center', sortable: true},
 			{ name: 'cpuAndMemory', index:'cpuAndMemory', align:'center', sortable: true},
 			{ name: 'innerIP', index:'innerIP', align:'center', sortable: true},
 			{ name: 'outterIP', index:'outterIP', align:'center', sortable: true},
-			{ name: 'macAddress', index:'macAddress', align:'center', sortable: true},
-			{ name: 'agentVersion', index:'agentVersion', align:'center', sortable: true},
-			{ name: 'agentStatus', index:'agentStatus', align:'center', sortable: true},
+			{ name: 'agentVersion', index:'agentVersion', align:'center', sortable: false, searchable:false},
+			{ name: 'agentStatus', index:'agentStatus', align:'center', sortable: false, searchable:false},
 			{ name: 'createDate', index:'createDate',align:'center', expType:'date',expValue:'yyyy-MM-dd',searchoptions:{dataInit:PlatformUI.defaultJqueryUIDatePick}, sortable: true ,formatter:'date',formatoptions: { srcformat: 'U', newformat: 'Y-m-d H:i:s' }}
         ],
         pager: "#pager",

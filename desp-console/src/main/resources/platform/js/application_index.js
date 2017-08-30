@@ -15,9 +15,12 @@ $(function(){
 					value: "",
 					condition: ""
 				},//top工具form数据
-				form: {applicationIntro:null,charger:null,allInstanceNum:null,runningInstanceNum:null,applicationName:null},
+				form: {applicationIntro:null,charger:null,allInstanceNum:null,runningInstanceNum:null,applicationName:null,appId:null},
 		        formRules: {
 					applicationIntro:[
+					],
+					appId:[
+						{ required: 'true', message: '请输入应用标识', trigger: 'change' }
 					],
 					charger:[
 						{ required: 'true', message: '请输入负责人', trigger: 'change' }
@@ -80,35 +83,13 @@ $(function(){
 					}
 				});
 			},
-			del: function(){//删除 
-				var ids = grid.jqGrid ('getGridParam', 'selarrrow');
-				if(ids.length == 0){
-					PlatformUI.message({message:"请至少选择一条要删除的数据!", type:"warning"});
-					return;
-				}
-				this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
-		          confirmButtonText: '确定',
-		          cancelButtonText: '取消',
-		          type: 'warning'
-		        }).then(function(){
-		        	PlatformUI.ajax({
-						url: contextPath + "/application",
-						type: "post",
-						data: {_method:"delete",ids:ids},
-						message:PlatformUI.message,
-						afterOperation: function(){
-							PlatformUI.refreshGrid(grid, {sortname:"createDate",sortorder:"desc"});
-						}
-					});
-		        });
-			},
 			exp: function(){//导出
 				PlatformUI.exportGrid("list", "from desp_application");
 			},
 			resetForm: function(){
 				this.dialogFormVisible = false;
 				this.$refs['form'].resetFields();
-				this.form = {applicationIntro:null,charger:null,allInstanceNum:null,runningInstanceNum:null,applicationName:null};
+				this.form = {applicationIntro:null,charger:null,allInstanceNum:null,runningInstanceNum:null,applicationName:null,appId:null};
 			},
 			onSubmit: function(){//弹出表单的提交
 				var context = this;
@@ -157,6 +138,15 @@ $(function(){
 		    	this.dialogGridSelectionVisible = false;
 		    	//重设jqrid宽度
 		    	PlatformUI.fineTuneGridSize(grid, 35);
+		    },
+		    enterDetail: function(){
+		    	var ids = grid.jqGrid ('getGridParam', 'selarrrow');
+				if(ids.length != 1){
+					PlatformUI.message({message: "选择一条操作的数据", type: "warning"});
+					return;
+				}
+				var rowData = grid.jqGrid ('getRowData', ids[0]);
+		    	location.href = contextPath + "/application/detail?id=" + ids[0];
 		    }
 		}
 	});
@@ -173,10 +163,11 @@ $(function(){
         height:300,
         mtype: "GET",
         multiselect: true,
-        colNames: ['ID','应用名称','负责人','运行实例数','全部实例数','应用说明','创建时间'],
+        colNames: ['ID','应用名称','应用标识', '负责人','运行实例数','全部实例数','应用说明','创建时间'],
         colModel: [
 			{ name: 'id', index:'id',hidden: true},
 			{ name: 'applicationName', index:'applicationName', align:'center', sortable: true},
+			{ name: 'appId', index:'appId', align:'center', sortable: true},
 			{ name: 'charger', index:'charger', align:'center', sortable: true},
 			{ name: 'runningInstanceNum', index:'runningInstanceNum', align:'center', sortable: true},
 			{ name: 'allInstanceNum', index:'allInstanceNum', align:'center', sortable: true},

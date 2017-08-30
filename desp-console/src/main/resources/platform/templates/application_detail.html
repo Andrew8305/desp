@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>应用详情</title>
+  ${jsContext}${appJs}${jquery}${bootstrap}${jqueryUI}${jqGrid}${vue}${ele}${pnotify}
+  <script type="text/javascript" src="${request.contextPath}/js/application_detail.js"></script>
+  <link rel="stylesheet" href="${request.contextPath}/css/global.css">
+</head>
+<body>
+	<div id="app">
+		<el-row>
+			<el-col :span="8">
+				<div style="font-size:18px;margin-left:10px;">
+					<img src="${request.contextPath}/images/app.png">
+					${application.applicationName}
+				</div>
+			</el-col>
+			<el-col :span="14" offset="2">
+				<el-button type="warning" @click="returnMainList" icon="arrow-left"  size="small">返回主列表</el-button>
+				<el-button type="primary" size="small" @click="dialogUploadVisible=true" icon="plus">上传jar</el-button>
+				<el-button type="success" size="small" :disabled="button.start.disabled">启动应用</el-button>
+				<el-button type="primary" size="small" :disabled="button.deploy.disabled" :plain="true" >部署应用</el-button>
+				<el-button size="small" :plain="true" :disabled="button.stop.disabled">停止应用</el-button>
+				<el-button size="small" type="danger" :disabled="button.del.disabled">删除应用</el-button>
+			</el-col>
+		</el-row>
+		
+		<div class="split-line"></div>
+		
+		<el-row>
+			<el-col :span="24">
+				<div style="padding:5px;width:100%;height:25px;border:1px solid #f3f5f9;background-color: #f3f5f9">
+					应用信息
+				</div>
+			</el-col>
+		</el-row>
+		<el-row>
+			<el-col :span="12">
+				<div style="font-size:15px;padding:5px;border:1px solid #f3f5f9;">
+					<el-row>
+						<el-col :span="11">应用标识:</el-col>
+						<el-col :span="11" :offset="2">${application.appId}</el-col>
+					</el-row>
+				</div>
+			</el-col>
+			<el-col :span="12">
+				<div style="font-size:15px;padding:5px;border:1px solid #f3f5f9;">
+					<el-row>
+						<el-col :span="11">负责人:</el-col>
+						<el-col :span="11" :offset="2">${application.charger}</el-col>
+					</el-row>
+				</div>
+			</el-col>
+		</el-row>
+		<el-row>
+			<el-col :span="12">
+				<div style="font-size:15px;padding:5px;border:1px solid #f3f5f9;">
+					<el-row>
+						<el-col :span="11">状态:</el-col>
+						<el-col :span="11" :offset="2"></el-col>
+					</el-row> 
+				</div>
+			</el-col>
+			<el-col :span="12">
+				<div style="font-size:15px;padding:5px;border:1px solid #f3f5f9;">
+					<el-row>
+						<el-col :span="11">程序包:</el-col>
+						<el-col :span="11" :offset="2">
+							<span id="spanJarName">
+								${application.jarName!""}
+							</span>
+						</el-col>
+					</el-row> 
+				</div>
+			</el-col>
+		</el-row>
+		<el-row>
+			<el-col :span="12">
+				<div style="font-size:15px;padding:5px;border:1px solid #f3f5f9;">
+					<el-row>
+						<el-col :span="11">创建时间:</el-col>
+						<el-col :span="11" :offset="2">${application.createDate}</el-col>
+					</el-row> 
+				</div>
+			</el-col>
+		</el-row>
+		
+		<div class="split-line"></div>
+		
+		<el-row>
+			<el-col :span="24">
+				<div style="padding:5px;width:100%;height:25px;border:1px solid #f3f5f9;background-color: #f3f5f9">
+					部署实例
+				</div>
+			</el-col>
+		</el-row>
+		<el-row>
+			<el-col :span="24">
+	  			<div>
+	  				<table id="list"></table>
+					<div id="pager"></div>
+				</div>
+	  		</el-col>
+		</el-row>
+		
+		<el-dialog title="文件上传" v-model="dialogUploadVisible" lock-scroll>
+			<el-upload
+				  :action="uploadUrl"
+				  :on-success="uploadJarSuccess"
+				  :on-error="uploadJarError"
+				  :before-upload="beforeUploadJar"
+				  :file-list="uploadFileList">
+				  <el-button size="small" type="primary">点击上传</el-button>
+				  <div slot="tip" class="el-upload__tip">只能上传可执行文件,大小没有限制</div>
+				</el-upload>
+		</el-dialog>
+		
+	</div>
+	
+  	<input type="hidden" value="${application.id}" id="id" />
+</body>
+
+</html>

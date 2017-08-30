@@ -30,8 +30,6 @@ public class MachineInstance {
 	private String outterIP;
 	// 外网IP
 	private String innerIP;
-	// mac地址
-	private String macAddress;
 	// agent状态
 	private String agentStatus;
 
@@ -97,14 +95,6 @@ public class MachineInstance {
 
 	public void setAgentStatus(String agentStatus) {
 		this.agentStatus = agentStatus;
-	}
-
-	public String getMacAddress() {
-		return macAddress;
-	}
-
-	public void setMacAddress(String macAddress) {
-		this.macAddress = macAddress;
 	}
 
 }

@@ -3,6 +3,7 @@ package org.apel.desp.agent.util;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.Who;
 
 /**
  * 配合HP sigar获取内存和cpu信息
@@ -11,11 +12,6 @@ import org.hyperic.sigar.SigarException;
  */
 public class SigarUtil {
 
-	 
-	public static void main(String[] args) {
-		System.out.println(getCpuNums());
-	}
-	
 	/**
 	 * 获取计算机内存
 	 */
@@ -49,4 +45,23 @@ public class SigarUtil {
 		return cpuNums;
 	}
 	
+	private static void who() throws SigarException {
+        Sigar sigar = new Sigar();
+        Who who[] = sigar.getWhoList();
+        if (who != null && who.length > 0) {
+            for (int i = 0; i < who.length; i++) {
+                // System.out.println("当前系统进程表中的用户名" + String.valueOf(i));
+                Who _who = who[i];
+                System.out.println("用户控制台:  " + _who.getDevice());
+                System.out.println("用户host: " + _who.getHost());
+                // System.out.println("getTime():   " + _who.getTime());
+                // 当前系统进程表中的用户名
+                System.out.println("当前系统进程表中的用户名:   " + _who.getUser());
+            }
+        }
+    }
+	
+	public static void main(String[] args) throws Exception {
+		who();
+	}
 }

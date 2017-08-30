@@ -5,7 +5,7 @@
   <title>应用</title>
   ${jsContext}${appJs}${jquery}${bootstrap}${jqueryUI}${jqGrid}${vue}${ele}${pnotify}
   <script type="text/javascript" src="${request.contextPath}/js/application_index.js"></script>
-	<link rel="stylesheet" href="${request.contextPath}/css/global.css">
+  <link rel="stylesheet" href="${request.contextPath}/css/global.css">
 </head>
 <body>
 	<div id="app">
@@ -46,20 +46,8 @@
 			<el-col :span="13">
 				<el-button icon="search" size="small" @click="commonSearch" type="primary">搜索</el-button>
 				<el-button icon="edit" size="small" @click="edit">编辑</el-button>
-				<el-button icon="delete" size="small" @click="del" type="danger" :plain="true">删除</el-button>
 				<el-button size="small" @click="exp">导出</el-button>
-				
-				
-				<el-upload
-				  class="upload-demo"
-				  action="${request.contextPath}/application/upload"
-				  :file-list="fileList2"
-				  show-file-list="false"
-				  list-type="picture">
-				  <el-button size="small" type="primary">点击上传</el-button>
-				  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-				</el-upload>
-				
+				<el-button size="small" @click="enterDetail">进入详情</el-button>
 			</el-col>
 			<el-col :span="1" offset="3">
 				<div class="float-right">
@@ -86,13 +74,18 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="负责人" prop="charger">
-							<el-input v-model="form.charger" size="small" placeholder="请输入负责人"></el-input>
+						<el-form-item label="应用标识" prop="appId">
+							<el-input v-model="form.appId" size="small" placeholder="请输入应用标识"></el-input>
 						</el-form-item>
 					</el-col>
 				</el-row>
 				<el-row>
-					<el-col :span="24">
+					<el-col :span="12">
+						<el-form-item label="负责人" prop="charger">
+							<el-input v-model="form.charger" size="small" placeholder="请输入负责人"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
 						<el-form-item label="应用说明" prop="applicationIntro">
 							<el-input v-model="form.applicationIntro" type="textarea" size="small" placeholder="请输入应用说明"></el-input>
 						</el-form-item>

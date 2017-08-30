@@ -44,9 +44,7 @@ public class Test2 {
 			@Override
 			public void childEvent(CuratorFramework arg0, PathChildrenCacheEvent event)
 					throws Exception {
-				client.getChildren().forPath("/desp/activeAgents").forEach(t -> {
-					System.out.println(t);
-				});
+				System.out.println("change");
 				switch (event.getType()) {
 				case CHILD_ADDED:
 					System.out.println("子元素增加");
@@ -54,6 +52,7 @@ public class Test2 {
 //					client.setData().forPath("/desp/status", Ints.toByteArray(1));
 					break;
 				case CHILD_UPDATED:
+					System.out.println(event.getData().getPath());
 					System.out.println("子元素修改");
 //					System.out.println(new String(client.getData().forPath("/desp/status")));
 					break;

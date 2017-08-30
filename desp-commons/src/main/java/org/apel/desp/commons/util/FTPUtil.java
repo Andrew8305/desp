@@ -25,13 +25,13 @@ public class FTPUtil{
 
 	private static final Logger LOG = LoggerFactory.getLogger(FTPUtil.class);
 
-	@Value("${ftp.host:127.0.0.1}")
+	@Value("${desp.ftp.host:127.0.0.1}")
 	private String host;
-	@Value("${ftp.port:2121}")
+	@Value("${desp.ftp.port:2121}")
 	private int port;
-	@Value("${ftp.username:admin}")
+	@Value("${desp.ftp.username:admin}")
 	private String userName;
-	@Value("${ftp.password:admin}")
+	@Value("${desp.ftp.password:admin}")
 	private String password;
 
 	/**
@@ -202,6 +202,25 @@ public class FTPUtil{
 		}finally{
 			closeFTPClient(ftp);
 		}
+	}
+	
+	/**
+	 * 获取ftp文件MD5 checksum
+	 * @param remoteFilePath ftp文件路径
+	 */
+	public String getChecksum(String remoteFilePath){
+		String checksum = "";
+		try {
+			FTPClient ftp = init();
+			if (FTPReply.isPositiveCompletion(ftp.sendCommand("md5", remoteFilePath))){
+				String[] reply = ftp.getReplyStrings();
+				checksum = reply[1];
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			Throwables.throwIfUnchecked(e);
+		}
+		return checksum;
 	}
 	
 	//关闭ftp客户端连接

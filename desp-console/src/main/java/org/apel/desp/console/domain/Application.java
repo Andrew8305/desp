@@ -6,78 +6,43 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 应用实例
+ * 
  * @author lijian
  *
  */
 @Entity
 @Table(name = "desp_application")
+@Setter
+@Getter
 public class Application {
 
 	@Id
 	private String id;
 
 	private Date createDate;
-	
+
 	// 应用说明
-	private String  applicationIntro;
+	private String applicationIntro;
+	// 应用标识
+	private String appId;
 	// 负责人
-	private String  charger;
+	private String charger;
 	// 全部实例数
-	private Integer  allInstanceNum;
+	private Integer allInstanceNum;
 	// 运行实例数
-	private Integer  runningInstanceNum;
+	private Integer runningInstanceNum;
 	// 应用名称
-	private String  applicationName;
-
-	
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-	
-	public String getApplicationIntro() {
-		return applicationIntro;
-	}
-	public void setApplicationIntro(String applicationIntro) {
-		this.applicationIntro = applicationIntro;
-	}
-	public String getCharger() {
-		return charger;
-	}
-	public void setCharger(String charger) {
-		this.charger = charger;
-	}
-	public Integer getAllInstanceNum() {
-		return allInstanceNum;
-	}
-	public void setAllInstanceNum(Integer allInstanceNum) {
-		this.allInstanceNum = allInstanceNum;
-	}
-	public Integer getRunningInstanceNum() {
-		return runningInstanceNum;
-	}
-	public void setRunningInstanceNum(Integer runningInstanceNum) {
-		this.runningInstanceNum = runningInstanceNum;
-	}
-	public String getApplicationName() {
-		return applicationName;
-	}
-	public void setApplicationName(String applicationName) {
-		this.applicationName = applicationName;
-	}
+	private String applicationName;
+	//程序包显示名
+	private String jarName;
+	//程序包真实名称
+	private String jarRealName;
+	//jar远程路径
+	private String remoteJarPath;
 
 }

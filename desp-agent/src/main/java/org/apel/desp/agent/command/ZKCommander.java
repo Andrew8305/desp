@@ -7,6 +7,6 @@ public interface ZKCommander {
 
 	ZKCommandCode commandCode();
 	
-	void execute(ZKCommand zkCommand);
+	void execute(ZKCommand zkCommand, ZKCommandCallback zkCommandCallback);
 	
 }

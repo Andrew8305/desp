@@ -29,7 +29,7 @@ public class AppInstance {
 	@JoinColumn(name = "m_id")
 	private MachineInstance machineInstance;
 	
-	//运行状态 0：未运行 1:运行中
+	//运行状态 0：已停止 1:运行中 2:停止中 3 部署中
 	private int status;
 	
 	private Date createDate;

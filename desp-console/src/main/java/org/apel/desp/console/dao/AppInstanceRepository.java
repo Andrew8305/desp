@@ -1,8 +1,12 @@
 package org.apel.desp.console.dao;
 
+import java.util.List;
+
 import org.apel.desp.console.domain.AppInstance;
 import org.apel.gaia.persist.dao.CommonRepository;
 
 public interface AppInstanceRepository extends CommonRepository<AppInstance, String>{
 
+	List<AppInstance> findByApplicationIdAndMachineInstanceId(String appPrimary, String mId);
+	
 }

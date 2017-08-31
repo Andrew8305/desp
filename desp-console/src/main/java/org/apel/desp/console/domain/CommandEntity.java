@@ -27,6 +27,9 @@ public class CommandEntity {
 	//执行状态 0代表未执行 1代表已执行
 	private int status;
 	
+	//参数
+	private String param;
+	
 	
 	
 }

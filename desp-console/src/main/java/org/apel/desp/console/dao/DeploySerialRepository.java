@@ -8,5 +8,8 @@ import org.apel.gaia.persist.dao.CommonRepository;
 public interface DeploySerialRepository extends CommonRepository<DeploySerial, String>{
 
 	List<String> findByJarRealName(String jarRealName);
+
+	List<DeploySerial> findByApplicationIdAndMiIdAndJarRealName(String applicationId, String mId, String jarRealName);
+			
 	
 }

@@ -16,12 +16,13 @@
 					${application.applicationName}
 				</div>
 			</el-col>
-			<el-col :span="14" offset="2">
+			<el-col :span="16">
 				<el-button type="warning" @click="returnMainList" icon="arrow-left"  size="small">返回主列表</el-button>
 				<el-button type="primary" size="small" @click="dialogUploadVisible=true" icon="plus">上传jar</el-button>
 				<el-button type="success" size="small" :disabled="button.start.disabled">启动应用</el-button>
-				<el-button type="primary" size="small" :disabled="button.deploy.disabled" :plain="true" >部署应用</el-button>
+				<el-button size="small" :disabled="button.deploy.disabled" @click="showDeployDialog" :plain="true" >部署应用</el-button>
 				<el-button size="small" :plain="true" :disabled="button.stop.disabled">停止应用</el-button>
+				<el-button size="small" :plain="true" :disabled="button.rollback.disabled">应用回滚</el-button>
 				<el-button size="small" type="danger" :disabled="button.del.disabled">删除应用</el-button>
 			</el-col>
 		</el-row>
@@ -112,13 +113,59 @@
 				  :before-upload="beforeUploadJar"
 				  :file-list="uploadFileList">
 				  <el-button size="small" type="primary">点击上传</el-button>
-				  <div slot="tip" class="el-upload__tip">只能上传可执行文件,大小没有限制</div>
+				  <div slot="tip" class="el-upload__tip">只能上传可执行jar文件或者zip压缩文件</div>
 				</el-upload>
+		</el-dialog>
+		
+		<el-dialog title="部署应用" size="large" v-model="dialogDeployVisible" lock-scroll>
+			<el-row>
+				<el-col :span="24">
+					<el-button type="primary" size="small" @click="allDeploy">全部部署</el-button>
+					<el-button type="primary" size="small" @click="deploy" :plain="true">选择部署</el-button>
+				</el-col>
+			</el-row>
+			<div style="margin-top:9px;"></div>
+			<el-row>
+				<el-col :span="4">
+					<el-input v-model="grid.unDeployMachine.searchVal" placeholder="请输入物理机实例名称" onkeyup="if(arguments[0].keyCode == 13)unDeployMachineGridSearch();" size="small"></el-input>
+				</el-col>
+				<el-col :span="4" :offset="1">
+					<el-button @click="unDeployMachineGridSearch()" size="small" :plain="true">搜索</el-button>
+				</el-col>
+			</el-row>
+			<div style="margin-top:5px;"></div>
+			<el-row>
+				<el-col :span="24">
+		  			<div>
+		  				<table id="unDeployMachineList"></table>
+						<div id="unDeployMachinePager"></div>
+					</div>
+		  		</el-col>
+			</el-row>
+			<div style="margin-top:15px;"></div>
+			<el-row>
+				<el-col :span="4">
+					<el-input v-model="grid.deployedMachine.searchVal" placeholder="请输入物理机实例名称"  onkeyup="if(arguments[0].keyCode == 13)deployedMachineGridSearch();" size="small"></el-input>
+				</el-col>
+				<el-col :span="4" :offset="1">
+					<el-button @click="deployedMachineGridSearch()" size="small" :plain="true">搜索</el-button>
+				</el-col>
+			</el-row>
+			<div style="margin-top:5px;"></div>
+			<el-row>
+				<el-col :span="24">
+		  			<div>
+		  				<table id="deployedMachineList"></table>
+						<div id="deployedMachinePager"></div>
+					</div>
+		  		</el-col>
+			</el-row>
 		</el-dialog>
 		
 	</div>
 	
   	<input type="hidden" value="${application.id}" id="id" />
+  	<input type="hidden" value="${application.appId}" id="appId" />
 </body>
 
 </html>

@@ -3,7 +3,7 @@ package org.apel.desp.agent.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apel.desp.commons.ZKCommandNotFoundException;
+import org.apel.desp.commons.ZKCommanderNotFoundException;
 import org.apel.desp.commons.consist.ZKCommandCode;
 import org.apel.desp.commons.domain.ZKCommand;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,12 @@ public class ZKCommandManager implements ApplicationListener<ContextRefreshedEve
 	private ApplicationContext applicationContext;
 	private Map<ZKCommandCode, ZKCommander> zkCommandMap = new HashMap<>();
 	
-	public void execute(ZKCommand zkCommond){
-		ZKCommander zkCommand = zkCommandMap.get(zkCommond.getZkCommandCode());
-		if (zkCommand == null){
-			throw new ZKCommandNotFoundException();
+	public void execute(ZKCommand zkCommand, ZKCommandCallback zkCommandCallback){
+		ZKCommander zkCommander = zkCommandMap.get(ZKCommandCode.getZKCommand(zkCommand.getZkCommandCode()));
+		if (zkCommander == null){
+			throw new ZKCommanderNotFoundException();
 		}
-		zkCommandMap.get(zkCommond.getZkCommandCode()).execute(zkCommond);
+		zkCommander.execute(zkCommand, zkCommandCallback);
 	}
 	
 	@Override

@@ -107,6 +107,7 @@ public class ApplicationController {
 		return applicationService.findAll(new Sort(Direction.DESC, "createDate"));
 	}
 	
+	//上传jar
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public @ResponseBody String upload(HttpServletRequest request) {
 		try {
@@ -131,6 +132,20 @@ public class ApplicationController {
 			Throwables.throwIfUnchecked(e);
 		}
 		return "success";
+	}
+	
+	//部署
+	@RequestMapping(value = "/deploy", method = RequestMethod.POST)
+	public @ResponseBody Message deploy(@RequestParam("mids[]")String[] mids, String appPrimary){
+		applicationService.deploy(mids, appPrimary);
+		return MessageUtil.message("deploy.success");
+	}
+	
+	//全部部署
+	@RequestMapping(value = "/deployAll", method = RequestMethod.POST)
+	public @ResponseBody Message deployAll(String appPrimary){
+		applicationService.deployAll(appPrimary);
+		return MessageUtil.message("deploy.success");
 	}
 	
 

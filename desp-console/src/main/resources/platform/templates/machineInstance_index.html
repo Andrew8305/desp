@@ -94,6 +94,15 @@
 					</el-col>	
 				</el-row>
 				
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="mac" prop="macAddress">
+							<el-input v-model="form.macAddress" size="small" placeholder="请输入mac地址"></el-input>
+						</el-form-item>
+					</el-col>
+					
+				</el-row>
+				
 			</el-form> 
 			<div slot="footer" class="dialog-footer">
 				<el-button type="primary" size="small" @click="onSubmit">{{submitBtnName}}</el-button>

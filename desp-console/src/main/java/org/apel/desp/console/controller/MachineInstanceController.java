@@ -58,6 +58,14 @@ public class MachineInstanceController {
 		return pageBean;
 	}
 	
+	//查询有指定app发布的机器实例
+	@RequestMapping("/list/forDeployedStaticApp")
+	public @ResponseBody PageBean pageQueryForDeployedStaticApp(QueryParams queryParams, String appId){
+		PageBean pageBean = JqGridUtil.getPageBean(queryParams);
+		machineInstanceService.pageQueryForDeployedStaticApp(pageBean, appId);
+		return pageBean;
+	}
+	
 	//新增
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody Message create(MachineInstance machineInstance){

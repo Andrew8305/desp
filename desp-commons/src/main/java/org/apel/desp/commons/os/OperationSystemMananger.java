@@ -60,5 +60,15 @@ public class OperationSystemMananger implements OSOperator, ApplicationListener<
 	public int getPID(String appId) {
 		return osOperator.getPID(appId);
 	}
+
+	@Override
+	public void killProcess(int pid) {
+		osOperator.killProcess(pid);
+	}
+
+	@Override
+	public void startApp(String appId) {
+		osOperator.startApp(appId);
+	}
 	
 }

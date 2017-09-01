@@ -61,7 +61,11 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 		//先保存本地数据库，然后将流嫁接给ftp
 		application.setJarName(fileName);
 		String remoteJarPath = application.getAppId();
-		String jarRealName = UUIDUtil.uuid() + ".jar";
+		String fileSuffix = ".jar";
+		if (fileName.endsWith(".zip")){
+			fileSuffix = ".zip";
+		}
+		String jarRealName = UUIDUtil.uuid() + fileSuffix;
 		application.setJarRealName(jarRealName);
 		application.setRemoteJarPath(remoteJarPath + "/" + jarRealName);
 		update(application);

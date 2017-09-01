@@ -27,4 +27,16 @@ public class LinuxOperator implements OSOperator{
 		return 0;
 	}
 
+	@Override
+	public void killProcess(int pid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startApp(String appId) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

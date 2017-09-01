@@ -1,6 +1,7 @@
 var vue;
 var unDeployMachineGrid;
 var deployedMachineGrid;
+var deployedStaticMachineGrid;
 
 $(function(){
 	
@@ -125,6 +126,8 @@ $(function(){
 		vue.button.rollback.disabled = true;
 	}
 	
+	//初始化已发布的物理机实例列表(静态指得是物理机的状态可以为空)
+	initDeployedStaticMachineGrid();
 	
 });
 
@@ -212,6 +215,56 @@ function initDeployedMachineGrid(){
     });
     setInterval(function(){
     	PlatformUI.refreshGrid(deployedMachineGrid, {sortname:"m.createDate",sortorder:"desc"});
+    }, 10000);
+}
+
+function initDeployedStaticMachineGrid(){
+	if (deployedStaticMachineGrid){
+		PlatformUI.refreshGrid(deployedStaticMachineGrid, {sortname:"m.createDate",sortorder:"desc"});
+		return;	
+	}
+	deployedStaticMachineGrid = $("#list").jqGrid({
+        url: contextPath + "/machineInstance/list/forDeployedStaticApp?appId=" + $("#appId").val(),
+        datatype: "json",
+        autowidth: true,
+        height:150,
+        mtype: "GET",
+        multiselect: true,
+        colNames: ['ID','实例名称','CPU/内存','内网IP','外网IP','mac地址','程序包','应用运行状态','agent状态','agent版本','创建时间'],
+        colModel: [
+			{ name: 'id', index:'id',hidden: true},
+			{ name: 'machineInstanceName', index:'machineInstanceName', align:'center', sortable: true},
+			{ name: 'cpuAndMemory', index:'cpuAndMemory', align:'center', sortable: true},
+			{ name: 'innerIP', index:'innerIP', align:'center', sortable: true},
+			{ name: 'outterIP', index:'outterIP', align:'center', sortable: true},
+			{ name: 'macAddress', index:'macAddress', align:'center', sortable: true},
+			{ name: 'jarName', index:'jarName', align:'center', sortable: true},
+			{ name: "status",align:'center',index:"status", sortable: true, searchable:false, formatter: appExecuteStatusFormatter},
+			{ name: 'agentStatus', index:'agentStatus', align:'center', sortable: true},
+			{ name: 'agentVersion', index:'agentVersion', align:'center', sortable: true},
+			{ name: 'createDate', index:'m.createDate',align:'center', expType:'date',expValue:'yyyy-MM-dd',searchoptions:{dataInit:PlatformUI.defaultJqueryUIDatePick}, sortable: true ,formatter:'date',formatoptions: { srcformat: 'U', newformat: 'Y-m-d H:i:s' }}
+        ],
+        pager: "#pager",
+        rowNum: 10,
+        rowList: [10,20,30],
+        sortname: "m.createDate",
+        sortorder: "desc",
+        viewrecords: true,
+        gridview: true,
+        rowattr: function (rd) {
+		    if (rd.status == 0) {
+		        return {"class": "color-red"};
+		    }else if (rd.status == 1){
+		    	return {"class": "color-green"};
+		    }else if (rd.status == 2 || rd.status == 3 || rd.status == 4){
+		   	 	return {"class": "color-yellow"};
+		    }
+		},
+        autoencode: true,
+        caption: "已部署的物理机实例"
+    });
+    setInterval(function(){
+    	PlatformUI.refreshGrid(deployedStaticMachineGrid, {sortname:"m.createDate",sortorder:"desc"});
     }, 10000);
 }
 

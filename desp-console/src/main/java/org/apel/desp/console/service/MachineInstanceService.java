@@ -14,5 +14,7 @@ public interface MachineInstanceService extends BizCommonService<MachineInstance
 	void clearAllStatus();
 
 	void updateStatus(String macAddress, String agentStatus, String agentVersion);
+
+	void pageQueryForDeployedStaticApp(PageBean pageBean, String appId);
 	
 }

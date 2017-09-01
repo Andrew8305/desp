@@ -10,13 +10,13 @@
 <body>
 	<div id="app">
 		<el-row>
-			<el-col :span="8">
+			<el-col :span="7">
 				<div style="font-size:18px;margin-left:10px;">
 					<img src="${request.contextPath}/images/app.png">
 					${application.applicationName}
 				</div>
 			</el-col>
-			<el-col :span="16">
+			<el-col :span="17">
 				<el-button type="warning" @click="returnMainList" icon="arrow-left"  size="small">返回主列表</el-button>
 				<el-button type="primary" size="small" @click="dialogUploadVisible=true" icon="plus">上传jar</el-button>
 				<el-button type="success" size="small" :disabled="button.start.disabled">启动应用</el-button>
@@ -24,6 +24,7 @@
 				<el-button size="small" :plain="true" :disabled="button.stop.disabled">停止应用</el-button>
 				<el-button size="small" :plain="true" :disabled="button.rollback.disabled">应用回滚</el-button>
 				<el-button size="small" type="danger" :disabled="button.del.disabled">删除应用</el-button>
+				<el-button size="small" :plain="true" @click="location.reload()">刷新</el-button>
 			</el-col>
 		</el-row>
 		

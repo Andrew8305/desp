@@ -79,6 +79,20 @@ public class MachineInstanceServiceImpl extends AbstractBizCommonService<Machine
 		}
 	}
 
+	@Override
+	public void pageQueryForDeployedStaticApp(PageBean pageBean, String appId) {
+		Condition c = new Condition();
+		c.setPropertyName("a.appId");
+		c.setPropertyValue(appId);
+		c.setOperation(Operation.EQ);
+		c.setRelateType(RelateType.AND);
+		pageBean.getConditions().add(c);
+		String hql = "select m.id,m.macAddress,m.cpuAndMemory,m.innerIP,m.outterIP,"
+				+ "m.machineInstanceName,m.createDate,ai.status, ai.jarName,m.agentVersion,m.agentStatus"
+				+ " from AppInstance ai right join ai.machineInstance m left join ai.application a where 1=1";
+		getRepository().doPager(pageBean, hql);
+	}
+
 
 	
 

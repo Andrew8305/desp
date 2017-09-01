@@ -1,6 +1,9 @@
 package org.apel.desp.console.service.impl;
 
+import java.util.List;
+
 import org.apel.desp.commons.consist.SystemConsist;
+import org.apel.desp.console.dao.MachineInstanceRepository;
 import org.apel.desp.console.domain.MachineInstance;
 import org.apel.desp.console.service.MachineInstanceService;
 import org.apel.gaia.commons.pager.Condition;
@@ -54,9 +57,26 @@ public class MachineInstanceServiceImpl extends AbstractBizCommonService<Machine
 		c2.setRelateType(RelateType.AND);
 		pageBean.getConditions().add(c);
 		pageBean.getConditions().add(c2);
-		String hql = "select m.id,m.macAddress,m.cpuAndMemory,m.innerIP,m.outterIP,m.machineInstanceName,m.createDate,ai.status, a.jarName"
+		String hql = "select m.id,m.macAddress,m.cpuAndMemory,m.innerIP,m.outterIP,m.machineInstanceName,m.createDate,ai.status, ai.jarName"
 				+ " from AppInstance ai right join ai.machineInstance m left join ai.application a where 1=1";
 		getRepository().doPager(pageBean, hql);
+	}
+
+	@Override
+	public void clearAllStatus() {
+		((MachineInstanceRepository)getRepository()).clearAllStatus();
+	}
+
+	@Override
+	public void updateStatus(String macAddress, String agentStatus, String agentVersion) {
+		List<MachineInstance> mis = ((MachineInstanceRepository)getRepository()).findByMacAddress(macAddress);
+		if (mis.size() != 0){
+			for (MachineInstance mi : mis) {
+				mi.setAgentVersion(agentVersion);
+				mi.setAgentStatus(agentStatus);
+				getRepository().update(mi);
+			}
+		}
 	}
 
 

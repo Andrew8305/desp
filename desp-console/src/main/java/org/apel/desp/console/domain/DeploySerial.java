@@ -37,4 +37,6 @@ public class DeploySerial {
 	private Application application;
 	
 	private String jarRealName;
+	
+	private String jarName;
 }

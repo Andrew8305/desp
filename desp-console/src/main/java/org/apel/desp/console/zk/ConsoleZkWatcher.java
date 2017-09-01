@@ -7,13 +7,15 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
-import org.apache.zookeeper.CreateMode;
 import org.apel.desp.commons.consist.SystemConsist;
 import org.apel.desp.commons.consist.ZKNodePath;
 import org.apel.desp.commons.domain.ZKCommand;
 import org.apel.desp.commons.monitor.AgentMonitorInfo;
+import org.apel.desp.commons.util.NetUtil;
 import org.apel.desp.commons.util.ZKConnector;
+import org.apel.desp.console.service.AppInstanceService;
 import org.apel.desp.console.service.CommandService;
+import org.apel.desp.console.service.MachineInstanceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,16 +44,28 @@ public class ConsoleZkWatcher implements ApplicationListener<ContextRefreshedEve
 	private ZKConnector zkConnector;
 	@Autowired
 	private CommandService commandService;
+	@Autowired
+	private MachineInstanceService machineInstanceService;
+	@Autowired
+	private AppInstanceService appInstanceService;
 	
-	@SuppressWarnings("resource")
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		CuratorFramework client = zkConnector.getClient();
+		//将所有物理机实例的运行状态清空
+		machineInstanceService.clearAllStatus();
 		
+		//监听agents变化，同步更新数据库
+		watchAgentChange();
+		
+		//监听commands节点的变化，如有更新变化，则同步更新数据库
+		watchCommandChange();
+	}
+
+	@SuppressWarnings("resource")
+	private void watchAgentChange() {
+		CuratorFramework client = zkConnector.getClient();
 		PathChildrenCache agentsChildrenCache = new PathChildrenCache(client,
 				ZKNodePath.ZK_ACTIVE_AGENTS_PATH, false);
-		
-		TreeCache commandChildrenCache = new TreeCache(client, ZKNodePath.ZK_COMMONDS_PATH);
 		try {
 			agentsChildrenCache.start();
 			agentsChildrenCache.getListenable()
@@ -59,19 +73,20 @@ public class ConsoleZkWatcher implements ApplicationListener<ContextRefreshedEve
 				@Override
 				public void childEvent(CuratorFramework arg0,
 						PathChildrenCacheEvent event) throws Exception {
+					String macAddress = NetUtil.macPureToRaw(ZKNodePath.getLeafNodeName(event.getData().getPath()));
 					switch (event.getType()) {
-					case CHILD_ADDED:
-						AgentMonitorInfo monitorInfo1 = JSON.parseObject(new String(client.getData().forPath(event.getData().getPath())), AgentMonitorInfo.class);
-						System.out.println("一开始的时候:" + new String(client.getData().forPath(event.getData().getPath())));
+					case CHILD_ADDED://监听agents节点个数变化，如果有新增，则更新物理机实例的状态为运行中
+						
+						machineInstanceService.updateStatus(macAddress, SystemConsist.AGENT_STATUS_RUNNING, getAgentMonitorInfo(event).getAgentVersion());//更新物理机状态
+						appInstanceService.updateStatus(macAddress, getAgentMonitorInfo(event).getApps());//更新物理机上的app状态
 						break;
-					case CHILD_UPDATED:
-						byte[] forPath = client.getData().forPath(event.getData().getPath());
-						System.out.println("做了操作的时候:" + new String(forPath));
-						AgentMonitorInfo monitorInfo = JSON.parseObject(new String(forPath), AgentMonitorInfo.class);
-						System.out.println(monitorInfo);
+					case CHILD_UPDATED://监听agent节点的状态变化，收到变化通知，更新本地数据库
+						
+						appInstanceService.updateStatus(macAddress, getAgentMonitorInfo(event).getApps());//更新物理机上的app状态
 						break;
-					case CHILD_REMOVED:
-						System.out.println("子元素删除");
+					case CHILD_REMOVED://监听agents节点个数变化，如果有新增，则更新物理机实例的状态会已停止
+						
+						machineInstanceService.updateStatus(macAddress, SystemConsist.AGENT_STATUS_STOPED, "none");
 						break;
 					default:
 						break;
@@ -82,7 +97,27 @@ public class ConsoleZkWatcher implements ApplicationListener<ContextRefreshedEve
 			e.printStackTrace();
 			Throwables.throwIfUnchecked(e);
 		}
-		
+	}
+	
+	private AgentMonitorInfo getAgentMonitorInfo(PathChildrenCacheEvent event){
+		AgentMonitorInfo monitorInfo = null;
+		try {
+			byte[] dataBytes = zkConnector.getClient().getData().forPath(event.getData().getPath());
+			monitorInfo = JSON.parseObject(new String(dataBytes), AgentMonitorInfo.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Throwables.throwIfUnchecked(e);
+		}
+		return monitorInfo;
+	}
+
+	/**
+	 * 
+	 */
+	@SuppressWarnings("resource")
+	private void watchCommandChange() {
+		CuratorFramework client = zkConnector.getClient();
+		TreeCache commandChildrenCache = new TreeCache(client, ZKNodePath.ZK_COMMONDS_PATH);
 		try {
 			commandChildrenCache.start();
 			commandChildrenCache.getListenable()

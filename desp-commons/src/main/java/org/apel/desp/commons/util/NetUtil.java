@@ -42,4 +42,19 @@ public class NetUtil {
 		return getLocalMac().replaceAll("-", "");
 	}
 	
+	/**
+	 * 获取本地mac地址(无破折号)
+	 */
+	public static String macPureToRaw(String pureMacAddress){
+		char[] charArray = pureMacAddress.toCharArray();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < charArray.length; i++) {
+			if (i != 0 && i % 2 == 0){
+				sb.append('-');
+			}
+			sb.append(charArray[i]);
+		}
+		return sb.toString();
+	}
+	
 }

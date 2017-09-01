@@ -1,5 +1,7 @@
 package org.apel.desp.console.domain;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -29,6 +31,8 @@ public class CommandEntity {
 	
 	//参数
 	private String param;
+	
+	private Date createDate;
 	
 	
 	

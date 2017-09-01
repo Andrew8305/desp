@@ -214,7 +214,7 @@ public class FTPUtil{
 			FTPClient ftp = init();
 			if (FTPReply.isPositiveCompletion(ftp.sendCommand("md5", remoteFilePath))){
 				String[] reply = ftp.getReplyStrings();
-				checksum = reply[1];
+				checksum = reply[0].split(" ")[2];
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

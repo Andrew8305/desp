@@ -9,6 +9,8 @@ import lombok.Setter;
 @Getter
 public class AgentMonitorInfo {
 
+	private String agentVersion;
+	private String status;
 	private List<ApplicationMonitorInfo> apps;
 	
 }

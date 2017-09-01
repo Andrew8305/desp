@@ -162,6 +162,9 @@ function initUnDeployMachineGrid(){
         autoencode: true,
         caption: "未部署的物理机实例"
     });
+    setInterval(function(){
+    	PlatformUI.refreshGrid(unDeployMachineGrid, {sortname:"m.createDate",sortorder:"desc"});
+    }, 10000);
 }
 
 function initDeployedMachineGrid(){
@@ -207,6 +210,9 @@ function initDeployedMachineGrid(){
         autoencode: true,
         caption: "已部署的物理机实例"
     });
+    setInterval(function(){
+    	PlatformUI.refreshGrid(deployedMachineGrid, {sortname:"m.createDate",sortorder:"desc"});
+    }, 10000);
 }
 
 function appExecuteStatusFormatter(cellvalue, options, rowObject){

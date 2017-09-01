@@ -7,11 +7,9 @@ import org.apel.desp.commons.consist.SystemConsist;
 import org.apel.desp.commons.consist.ZKNodePath;
 import org.apel.desp.commons.domain.ZKCommand;
 import org.apel.desp.commons.util.ZKConnector;
+import org.apel.desp.console.dao.CommandRepository;
 import org.apel.desp.console.domain.CommandEntity;
 import org.apel.desp.console.service.CommandService;
-import org.apel.gaia.commons.pager.Condition;
-import org.apel.gaia.commons.pager.Operation;
-import org.apel.gaia.commons.pager.RelateType;
 import org.apel.gaia.infrastructure.impl.AbstractBizCommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -46,6 +44,7 @@ public class CommandServiceImpl extends AbstractBizCommonService<CommandEntity, 
 			zkCommand.setParam(commandEntity.getParam());
 			zkCommand.setAppId(commandEntity.getAppId());
 			zkCommand.setStatus(SystemConsist.COMMAND_EXE_STATUS_NONE);
+			zkCommand.setCreateDate(commandEntity.getCreateDate());
 			zkCommand.setZkCommandCode(commandEntity.getZkCommandCode());
 			String[] agents = commandEntity.getAgents().split(",");
 			for (String agent : agents) {
@@ -65,16 +64,11 @@ public class CommandServiceImpl extends AbstractBizCommonService<CommandEntity, 
 
 	@Override
 	public void retryUndoneCommand() {
-		Condition c = new Condition();
-		c.setPropertyName("status");
-		c.setPropertyValue(SystemConsist.COMMAND_EXE_STATUS_NONE);
-		c.setRelateType(RelateType.AND);
-		c.setOperation(Operation.EQ);
-		List<CommandEntity> commands = findByCondition(c);
+		List<CommandEntity> commands = ((CommandRepository)getRepository())
+				.findByStatusOrderByCreateDateAsc(SystemConsist.COMMAND_EXE_STATUS_NONE);
 		for (CommandEntity commandEntity : commands) {
 			sendZKCommand(commandEntity);
 		}
-		
 	}
 
 	@Override

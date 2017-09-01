@@ -1,5 +1,7 @@
 package org.apel.desp.commons.domain;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +21,8 @@ public class ZKCommand {
 	//参数
 	private String param;
 	
-	//执行状态：0代表未执行,1代表执行
+	//执行状态
 	private int status;
+	
+	private Date createDate;
 }

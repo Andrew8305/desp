@@ -1,21 +1,22 @@
 package org.apel.desp.commons.util;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.curator.shaded.com.google.common.base.Throwables;
+
+import com.twmacinta.util.MD5;
 
 public class FileUtil {
 
 	/**
 	 * 获取本地文件md5 checksum
-	 * @param file 文件路径
+	 * @param filePath 文件路径
 	 */
-	public static String checkSumApacheCommons(String file) {
+	public static String checkSum(String filePath) {
 		String checksum = null;
-		try(FileInputStream fis = new FileInputStream(file)) {
-			checksum = DigestUtils.md5Hex(fis);
+		try {
+			checksum = MD5.asHex(MD5.getHash(new File(filePath)));
 		} catch (IOException e) {
 			Throwables.throwIfUnchecked(e);
 		}

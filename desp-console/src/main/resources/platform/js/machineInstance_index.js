@@ -187,6 +187,13 @@ $(function(){
         sortorder: "desc",
         viewrecords: true,
         gridview: true,
+        rowattr: function (rd) {
+		    if (rd.agentStatus == "运行中") {
+		        return {"class": "color-green"};
+		    }else{
+		    	return {"class": "color-red"};
+		    }
+		},
         autoencode: true,
         caption: "列表",
     	gridComplete: function(){
@@ -208,7 +215,11 @@ $(function(){
 	    	}
     	}
     });
-			
+    
+    setInterval(function(){
+    	PlatformUI.refreshGrid(grid, {sortname:"createDate",sortorder:"desc"});
+    }, 10000);
+    
 });
 
 /***********************方法区***************************/

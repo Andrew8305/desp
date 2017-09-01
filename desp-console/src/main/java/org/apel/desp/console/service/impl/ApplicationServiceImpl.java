@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apel.desp.commons.consist.SystemConsist;
 import org.apel.desp.commons.consist.ZKCommandCode;
+import org.apel.desp.commons.exception.AgentNotRunningException;
+import org.apel.desp.commons.exception.ApplicationStatusIllegleException;
 import org.apel.desp.commons.util.FTPUtil;
 import org.apel.desp.console.dao.AppInstanceRepository;
 import org.apel.desp.console.dao.CommandRepository;
@@ -87,6 +89,7 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 			commandEntity.setStatus(SystemConsist.COMMAND_EXE_STATUS_NONE);
 			commandEntity.setZkCommandCode(Integer.valueOf(ZKCommandCode.PULL_FILE.toString()));
 			commandEntity.setAppId(application.getAppId());
+			commandEntity.setCreateDate(new Date());
 			Map<String, String> param = new HashMap<>();
 			param.put("appId", application.getAppId());
 			param.put("jarRealName", application.getJarRealName());
@@ -104,6 +107,10 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 			AppInstance ai = new AppInstance();
 			application = findById(appPrimary);
 			mi = machineInstanceRepository.findOne(mid);
+			if (!SystemConsist.AGENT_STATUS_RUNNING.equals(mi.getAgentStatus())){
+				throw new AgentNotRunningException();
+			}
+			ai.setJarName(application.getJarName());
 			ai.setCreateDate(new Date());
 			ai.setStatus(SystemConsist.APPINSTANCE_STATUS_DEPLOYING);
 			ai.setApplication(application);
@@ -111,9 +118,16 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 			appInstanceRepository.store(ai);
 		}else{//如果数据库中有关联，直接更新关联状态为部署中
 			AppInstance ai = appInstances.get(0);
+			if (ai.getStatus() != SystemConsist.APPINSTANCE_STATUS_STOPED){
+				throw new ApplicationStatusIllegleException("不能部署");
+			}
+			mi = ai.getMachineInstance();
+			if (!SystemConsist.AGENT_STATUS_RUNNING.equals(mi.getAgentStatus())){
+				throw new AgentNotRunningException();
+			}
+			ai.setJarName(ai.getApplication().getJarName());
 			ai.setStatus(SystemConsist.APPINSTANCE_STATUS_DEPLOYING);
 			application = ai.getApplication();
-			mi = ai.getMachineInstance();
 			appInstanceRepository.update(ai);
 		}
 		return new Object[]{application, mi};
@@ -131,6 +145,7 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 			DeploySerial deploySerial = new DeploySerial();
 			deploySerial.setApplication(application);
 			deploySerial.setMi(mi);
+			deploySerial.setJarName(application.getJarName());
 			deploySerial.setJarRealName(application.getJarRealName());
 			deploySerial.setDeployDate(new Date());
 			deploySerialRepository.store(deploySerial);
@@ -142,7 +157,10 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 
 	@Override
 	public void deployAll(String appPrimary) {
-		List<MachineInstance> mList = machineInstanceRepository.findAll();
+		List<MachineInstance> mList = machineInstanceRepository.findByAgentStatus(SystemConsist.AGENT_STATUS_RUNNING);
+		if (mList.size() == 0){
+			throw new RuntimeException("没有可部署的机器");
+		}
 		deploy(mList.stream().map(m -> m.getId()).collect(Collectors.toList()).toArray(new String[]{}), appPrimary);
 	}
 

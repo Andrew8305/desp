@@ -68,7 +68,7 @@ public class ApplicationController {
 	// 新增
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody Message create(Application application) {
-		applicationService.save(application);
+		applicationService.saveApplication(application);
 		return MessageUtil.message("application.create.success");
 	}
 
@@ -146,6 +146,55 @@ public class ApplicationController {
 	public @ResponseBody Message deployAll(String appPrimary){
 		applicationService.deployAll(appPrimary);
 		return MessageUtil.message("deploy.success");
+	}
+	
+	//启动
+	@RequestMapping(value = "/start", method = RequestMethod.POST)
+	public @ResponseBody Message start(@RequestParam("appInstanceIds[]")String[] appInstanceIds){
+		applicationService.start(appInstanceIds);
+		return MessageUtil.message("start.success");
+	}
+	
+	//全部启动
+	@RequestMapping(value = "/startAll", method = RequestMethod.POST)
+	public @ResponseBody Message startAll(String appPrimary){
+		applicationService.startAll(appPrimary);
+		return MessageUtil.message("start.success");
+	}
+	
+	//停止
+	@RequestMapping(value = "/stop", method = RequestMethod.POST)
+	public @ResponseBody Message stop(@RequestParam("appInstanceIds[]")String[] appInstanceIds){
+		applicationService.stop(appInstanceIds);
+		return MessageUtil.message("stop.success");
+	}
+	
+	//全部停止
+	@RequestMapping(value = "/stopAll", method = RequestMethod.POST)
+	public @ResponseBody Message stopAll(String appPrimary){
+		applicationService.stopAll(appPrimary);
+		return MessageUtil.message("stop.success");
+	}
+	
+	//全部删除
+	@RequestMapping(value = "/deleteAll", method = RequestMethod.POST)
+	public @ResponseBody Message deleteAll(String appPrimary){
+		applicationService.deleteAll(appPrimary);
+		return MessageUtil.message("application.delete.success");
+	}
+	
+	//删除
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public @ResponseBody Message delete(@RequestParam("appInstanceIds[]")String[] appInstanceIds){
+		applicationService.delete(appInstanceIds);
+		return MessageUtil.message("application.delete.success");
+	}
+	
+	//回滚
+	@RequestMapping(value = "/rollback", method = RequestMethod.POST)
+	public @ResponseBody Message rollback(String deploySerialId){
+		applicationService.rollback(deploySerialId);
+		return MessageUtil.message("rollback.success");
 	}
 	
 

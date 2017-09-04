@@ -30,7 +30,7 @@ public class DeploySerial {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "m_id")
-	private MachineInstance mi;
+	private MachineInstance machineInstance;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "app_id")

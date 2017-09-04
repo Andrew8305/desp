@@ -41,7 +41,7 @@ public class MonitorServiceImpl implements MonitorService{
 	private OperationSystemMananger operationSystemManager;
 	
 	private AgentMonitorInfo getZkAgentMonitorInfo(){
-		AgentMonitorInfo agentMonitorInfo = null;
+		AgentMonitorInfo agentMonitorInfo = new AgentMonitorInfo();
 		try {
 			byte[] dataBytes = zkConnector.getClient().getData().forPath(LOCAL_AGENT_PATH);
 			agentMonitorInfo = JSON.parseObject(new String(dataBytes), AgentMonitorInfo.class);
@@ -95,7 +95,7 @@ public class MonitorServiceImpl implements MonitorService{
 		}
 	}
 
-	@Scheduled(cron = "0 */1 * * * ?")
+	@Scheduled(cron = "*/30 * * * * ?")
 	@Override
 	public void scheduleSendMonitorInfo() {
 		//更新物理机基础信息

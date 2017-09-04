@@ -9,7 +9,7 @@ public interface DeploySerialRepository extends CommonRepository<DeploySerial, S
 
 	List<String> findByJarRealName(String jarRealName);
 
-	List<DeploySerial> findByApplicationIdAndMiIdAndJarRealName(String applicationId, String mId, String jarRealName);
+	List<DeploySerial> findByApplicationIdAndMachineInstanceIdAndJarRealName(String applicationId, String mId, String jarRealName);
 			
-	
+	List<DeploySerial> findByApplicationId(String applicationId);
 }

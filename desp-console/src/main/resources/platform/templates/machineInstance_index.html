@@ -73,11 +73,11 @@
 						<el-form-item label="实例名称" prop="machineInstanceName">
 							<el-input v-model="form.machineInstanceName" size="small" placeholder="请输入实例名称"></el-input>
 						</el-form-item>
-						<el-col :span="12">
-						<el-form-item label="cpu/内存" prop="cpuAndMemory">
-							<el-input v-model="form.cpuAndMemory" size="small" placeholder="请输入cpu/内存"></el-input>
-						</el-form-item>
 					</el-col>
+					<el-col :span="12">
+						<el-form-item label="mac" prop="macAddress">
+							<el-input v-model="form.macAddress" size="small" placeholder="请输入mac地址"></el-input>
+						</el-form-item>
 					</el-col>
 				</el-row>
 				
@@ -96,13 +96,11 @@
 				
 				<el-row>
 					<el-col :span="12">
-						<el-form-item label="mac" prop="macAddress">
-							<el-input v-model="form.macAddress" size="small" placeholder="请输入mac地址"></el-input>
+						<el-form-item label="cpu/内存" prop="cpuAndMemory">
+							<el-input v-model="form.cpuAndMemory" size="small" placeholder="请输入cpu/内存"></el-input>
 						</el-form-item>
 					</el-col>
-					
 				</el-row>
-				
 			</el-form> 
 			<div slot="footer" class="dialog-footer">
 				<el-button type="primary" size="small" @click="onSubmit">{{submitBtnName}}</el-button>

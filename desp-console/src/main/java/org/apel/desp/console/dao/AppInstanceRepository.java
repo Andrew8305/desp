@@ -10,5 +10,9 @@ public interface AppInstanceRepository extends CommonRepository<AppInstance, Str
 	List<AppInstance> findByApplicationIdAndMachineInstanceId(String appPrimary, String mId);
 	
 	List<AppInstance> findByApplicationAppIdAndMachineInstanceId(String appId, String mId);
+
+	List<AppInstance> findByApplicationIdAndMachineInstanceAgentStatusAndStatus(
+			String appPrimary, String agentStatusRunning,
+			int appinstanceStatusStoped);
 	
 }

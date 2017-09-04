@@ -17,4 +17,6 @@ public interface MachineInstanceService extends BizCommonService<MachineInstance
 
 	void pageQueryForDeployedStaticApp(PageBean pageBean, String appId);
 	
+	void pageQueryWithDeploySerial(PageBean pageBean, String appPrimary);
+	
 }

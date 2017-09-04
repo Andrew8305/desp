@@ -18,5 +18,21 @@ public interface ApplicationService extends BizCommonService<Application,String>
 	void deploy(String[] mids, String appPrimary);
 	
 	void deployAll(String appPrimary);
+
+	void start(String[] appInstanceIds);
+
+	void startAll(String appPrimary);
+
+	void stop(String[] appInstanceIds);
+
+	void stopAll(String appPrimary);
+
+	void delete(String[] appInstanceIds);
+
+	void deleteAll(String appPrimary);
+	
+	void saveApplication(Application application);
+
+	void rollback(String deploySerialId);
 	
 }

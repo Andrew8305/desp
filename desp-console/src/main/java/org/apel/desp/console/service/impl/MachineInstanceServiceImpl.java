@@ -14,6 +14,8 @@ import org.apel.gaia.infrastructure.impl.AbstractBizCommonService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
+
 @Service
 @Transactional
 public class MachineInstanceServiceImpl extends AbstractBizCommonService<MachineInstance, String> implements MachineInstanceService{
@@ -25,22 +27,14 @@ public class MachineInstanceServiceImpl extends AbstractBizCommonService<Machine
 		c.setPropertyValue(SystemConsist.AGENT_STATUS_RUNNING);
 		c.setOperation(Operation.EQ);
 		c.setRelateType(RelateType.AND);
-		Condition c2 = new Condition();
-		c2.setPropertyName("a.appId");
-		c2.setPrefixBrackets(true);
-		c2.setPropertyValue(appId);
-		c2.setOperation(Operation.NE);
-		c2.setRelateType(RelateType.AND);
-		Condition c3 = new Condition();
-		c3.setPropertyName("a.appId");
-		c3.setSuffixBrackets(true);
-		c3.setOperation(Operation.NU);
-		c3.setRelateType(RelateType.OR);
 		pageBean.getConditions().add(c);
-		pageBean.getConditions().add(c2);
-		pageBean.getConditions().add(c3);
-		String hql = "select DISTINCT m.id,m.macAddress,m.cpuAndMemory,m.innerIP,m.outterIP,m.machineInstanceName,m.createDate from AppInstance ai right join ai.machineInstance m left join ai.application a where 1=1";
-		getRepository().doPager(pageBean, hql);
+		String hql = "select m.id,m.macAddress,m.cpuAndMemory,m.innerIP,m.outterIP,m.machineInstanceName,m.createDate "
+		+ "from MachineInstance m where 1=1 and m.id not in "
+		+ "(select mm.id from AppInstance ai left join ai.machineInstance mm left join ai.application a "
+		+ "where a.appId = ?) ";
+		List<Object> params = Lists.newArrayList();
+		params.add(appId);
+		getRepository().doPager(pageBean, hql, params);
 	}
 
 	@Override
@@ -87,13 +81,27 @@ public class MachineInstanceServiceImpl extends AbstractBizCommonService<Machine
 		c.setOperation(Operation.EQ);
 		c.setRelateType(RelateType.AND);
 		pageBean.getConditions().add(c);
-		String hql = "select m.id,m.macAddress,m.cpuAndMemory,m.innerIP,m.outterIP,"
-				+ "m.machineInstanceName,m.createDate,ai.status, ai.jarName,m.agentVersion,m.agentStatus"
+		String hql = "select ai.id,m.macAddress,m.cpuAndMemory,m.innerIP,m.outterIP,"
+				+ "m.machineInstanceName,ai.createDate,ai.status, ai.jarName,m.agentVersion,m.agentStatus"
 				+ " from AppInstance ai right join ai.machineInstance m left join ai.application a where 1=1";
 		getRepository().doPager(pageBean, hql);
 	}
 
-
-	
+	@Override
+	public void pageQueryWithDeploySerial(PageBean pageBean, String appPrimary) {
+		Condition c = new Condition();
+		c.setPropertyName("m.agentStatus");
+		c.setPropertyValue(SystemConsist.AGENT_STATUS_RUNNING);
+		c.setOperation(Operation.EQ);
+		c.setRelateType(RelateType.AND);
+		pageBean.getConditions().add(c);
+		String hql = "select m.id,m.macAddress,m.cpuAndMemory,m.innerIP,m.outterIP,m.machineInstanceName,m.createDate "
+		+ "from MachineInstance m where 1=1 and m.id in "
+		+ "(select mm.id from DeploySerial d left join d.machineInstance mm left join d.application a "
+		+ "where a.id = ?) ";
+		List<Object> params = Lists.newArrayList();
+		params.add(appPrimary);
+		getRepository().doPager(pageBean, hql, params);
+	}
 
 }

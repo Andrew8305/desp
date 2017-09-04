@@ -19,11 +19,11 @@
 			<el-col :span="17">
 				<el-button type="warning" @click="returnMainList" icon="arrow-left"  size="small">返回主列表</el-button>
 				<el-button type="primary" size="small" @click="dialogUploadVisible=true" icon="plus">上传jar</el-button>
-				<el-button type="success" size="small" :disabled="button.start.disabled">启动应用</el-button>
+				<el-button type="success" size="small" @click="showStartDialog" :disabled="button.start.disabled">启动应用</el-button>
 				<el-button size="small" :disabled="button.deploy.disabled" @click="showDeployDialog" :plain="true" >部署应用</el-button>
-				<el-button size="small" :plain="true" :disabled="button.stop.disabled">停止应用</el-button>
-				<el-button size="small" :plain="true" :disabled="button.rollback.disabled">应用回滚</el-button>
-				<el-button size="small" type="danger" :disabled="button.del.disabled">删除应用</el-button>
+				<el-button size="small" :plain="true" :disabled="button.stop.disabled"  @click="showStopDialog">停止应用</el-button>
+				<el-button size="small" :plain="true" :disabled="button.rollback.disabled" @click="showRollbackDialog">应用回滚</el-button>
+				<el-button size="small" type="danger" :disabled="button.del.disabled" @click="dialogDeleteAppVisible=true">删除应用</el-button>
 				<el-button size="small" :plain="true" @click="location.reload()">刷新</el-button>
 			</el-col>
 		</el-row>
@@ -158,6 +158,106 @@
 		  			<div>
 		  				<table id="deployedMachineList"></table>
 						<div id="deployedMachinePager"></div>
+					</div>
+		  		</el-col>
+			</el-row>
+		</el-dialog>
+		
+		
+		<el-dialog title="启动应用" size="large" v-model="dialogStartableAppVisible" lock-scroll>
+			<el-row>
+				<el-col :span="24">
+					<el-button type="primary" size="small" @click="startAll">全部启动</el-button>
+					<el-button type="primary" size="small" @click="start" :plain="true">选择启动</el-button>
+				</el-col>
+			</el-row>
+			<div style="margin-top:9px;"></div>
+			<el-row>
+				<el-col :span="4">
+					<el-input v-model="grid.startable.searchVal" placeholder="请输入物理机实例名称" onkeyup="if(arguments[0].keyCode == 13)startableGridSearch();" size="small"></el-input>
+				</el-col>
+				<el-col :span="4" :offset="1">
+					<el-button @click="startableGridSearch()" size="small" :plain="true">搜索</el-button>
+				</el-col>
+			</el-row>
+			<div style="margin-top:5px;"></div>
+			<el-row>
+				<el-col :span="24">
+		  			<div>
+		  				<table id="startableAppList"></table>
+						<div id="startableAppPager"></div>
+					</div>
+		  		</el-col>
+			</el-row>
+		</el-dialog>
+		
+		<el-dialog title="停止应用" size="large" v-model="dialogStoppableAppVisible" lock-scroll>
+			<el-row>
+				<el-col :span="24">
+					<el-button type="primary" size="small" @click="stopAll">全部停止</el-button>
+					<el-button type="primary" size="small" @click="stop" :plain="true">选择停止</el-button>
+				</el-col>
+			</el-row>
+			<div style="margin-top:9px;"></div>
+			<el-row>
+				<el-col :span="4">
+					<el-input v-model="grid.stoppable.searchVal" placeholder="请输入物理机实例名称" onkeyup="if(arguments[0].keyCode == 13)stoppableGridSearch();" size="small"></el-input>
+				</el-col>
+				<el-col :span="4" :offset="1">
+					<el-button @click="stoppableGridSearch()" size="small" :plain="true">搜索</el-button>
+				</el-col>
+			</el-row>
+			<div style="margin-top:5px;"></div>
+			<el-row>
+				<el-col :span="24">
+		  			<div>
+		  				<table id="stppableAppList"></table>
+						<div id="stppableAppPager"></div>
+					</div>
+		  		</el-col>
+			</el-row>
+		</el-dialog>
+		
+		
+		<el-dialog title="删除应用" size="small" v-model="dialogDeleteAppVisible" lock-scroll>
+			<el-row>
+				<el-col :span="24">
+					<el-button type="primary" size="small" @click="deleAllApp">全部删除</el-button>
+					<el-button type="primary" size="small" @click="deleteApp" :plain="true">选择删除</el-button>
+				</el-col>
+			</el-row>
+		</el-dialog>
+		
+		<el-dialog title="应用回滚" size="large" v-model="dialogRollbackAppVisible" lock-scroll>
+			<el-row>
+				<el-col :span="24">
+					<el-button type="primary" size="small" @click="rollback" >回滚</el-button>
+				</el-col>
+			</el-row>
+			<div style="margin-top:9px;"></div>
+			<el-row>
+				<el-col :span="4">
+					<el-input v-model="grid.deploySerialMachine.searchVal" placeholder="请输入物理机实例名称" onkeyup="if(arguments[0].keyCode == 13)deploySerialMachineGridSearch();" size="small"></el-input>
+				</el-col>
+				<el-col :span="4" :offset="1">
+					<el-button @click="deploySerialMachineGridSearch()" size="small" :plain="true">搜索</el-button>
+				</el-col>
+			</el-row>
+			<div style="margin-top:5px;"></div>
+			<el-row>
+				<el-col :span="24">
+		  			<div>
+		  				<table id="deploySerialMachineList"></table>
+						<div id="deploySerialMachinePager"></div>
+					</div>
+		  		</el-col>
+			</el-row>
+			<div style="margin-top:15px;"></div>
+			<el-row>
+				<el-col :span="24">
+		  			<div>
+		  				<table id="deploySerialList"></table>
+						<div id="deploySerialPager"></div>
 					</div>
 		  		</el-col>
 			</el-row>

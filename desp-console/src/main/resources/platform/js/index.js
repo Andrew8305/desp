@@ -12,7 +12,7 @@ $(function(){
 			return {
 				currentUserBaseInfo:{},
 				level2MenuName:"",
-				tabItems: []
+				tabItems: [{name:'应用管理', selected:true, closeable:false, url:contextPath + "/application/index"}]
 			};
 		},
 		methods:{

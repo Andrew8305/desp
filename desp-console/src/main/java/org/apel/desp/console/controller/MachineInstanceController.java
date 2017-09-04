@@ -7,7 +7,10 @@ import org.apel.desp.console.service.MachineInstanceService;
 import org.apel.gaia.commons.i18n.Message;
 import org.apel.gaia.commons.i18n.MessageUtil;
 import org.apel.gaia.commons.jqgrid.QueryParams;
+import org.apel.gaia.commons.pager.Condition;
+import org.apel.gaia.commons.pager.Operation;
 import org.apel.gaia.commons.pager.PageBean;
+import org.apel.gaia.commons.pager.RelateType;
 import org.apel.gaia.util.jqgrid.JqGridUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -42,7 +45,7 @@ public class MachineInstanceController {
 		return pageBean;
 	}
 	
-	//查询没有指定app发布的机器实例
+	//查询没有部署appId的机器实例
 	@RequestMapping("/list/forUnDeployApp")
 	public @ResponseBody PageBean pageQueryForUnDeployApp(QueryParams queryParams, String appId){
 		PageBean pageBean = JqGridUtil.getPageBean(queryParams);
@@ -50,7 +53,7 @@ public class MachineInstanceController {
 		return pageBean;
 	}
 
-	//查询有指定app发布的机器实例
+	//查询已经发布了appId的机器实例
 	@RequestMapping("/list/forDeployedApp")
 	public @ResponseBody PageBean pageQueryForDeployedApp(QueryParams queryParams, String appId){
 		PageBean pageBean = JqGridUtil.getPageBean(queryParams);
@@ -58,7 +61,7 @@ public class MachineInstanceController {
 		return pageBean;
 	}
 	
-	//查询有指定app发布的机器实例
+	//查询已经发布了appId的机器实例，并且agent的状态可以是非运行
 	@RequestMapping("/list/forDeployedStaticApp")
 	public @ResponseBody PageBean pageQueryForDeployedStaticApp(QueryParams queryParams, String appId){
 		PageBean pageBean = JqGridUtil.getPageBean(queryParams);
@@ -66,9 +69,26 @@ public class MachineInstanceController {
 		return pageBean;
 	}
 	
+	//查询已经发布了appId的机器实例，并且agent的状态可以是非运行
+	@RequestMapping("/list/forDeploySerial")
+	public @ResponseBody PageBean pageQueryWithDeploySerial(QueryParams queryParams, String appPrimary){
+		PageBean pageBean = JqGridUtil.getPageBean(queryParams);
+		machineInstanceService.pageQueryWithDeploySerial(pageBean, appPrimary);
+		return pageBean;
+	}
+	
 	//新增
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody Message create(MachineInstance machineInstance){
+		Condition c = new Condition();
+		c.setPropertyName("macAddress");
+		c.setPropertyValue(machineInstance.getMacAddress());
+		c.setOperation(Operation.EQ);
+		c.setRelateType(RelateType.AND);
+		List<MachineInstance> mis = machineInstanceService.findByCondition(c);
+		if (mis.size() > 0){
+			throw new RuntimeException("mac地址重复，不能新增");
+		}
 		machineInstanceService.save(machineInstance);
 		return MessageUtil.message("machineInstance.create.success");
 	}

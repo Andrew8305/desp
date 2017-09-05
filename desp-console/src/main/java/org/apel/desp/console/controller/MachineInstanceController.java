@@ -2,6 +2,8 @@ package org.apel.desp.console.controller;
 
 import java.util.List;
 
+import org.apel.desp.commons.consist.SystemConsist;
+import org.apel.desp.commons.monitor.AgentMonitorInfo;
 import org.apel.desp.console.domain.MachineInstance;
 import org.apel.desp.console.service.MachineInstanceService;
 import org.apel.gaia.commons.i18n.Message;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,14 +30,34 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MachineInstanceController {
 	
 	private final static String INDEX_URL = "machineInstance_index";
+	private final static String MONITOR_URL = "machineInstance_monitor";
 	
 	@Autowired
 	private MachineInstanceService machineInstanceService;
 	
 	//首页
-	@RequestMapping(value = "index", method = RequestMethod.GET)
+	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index(){
 		return INDEX_URL;
+	}
+	
+	@RequestMapping(value = "/monitor/index", method = RequestMethod.GET)
+	public String monitorIndex(String id, Model model){
+		MachineInstance machineInstance = machineInstanceService.findById(id);
+		if (!SystemConsist.AGENT_STATUS_RUNNING.equals(machineInstance.getAgentStatus())){
+			return INDEX_URL;
+		}
+		model.addAttribute("machineInstance", machineInstance);
+		return MONITOR_URL;
+	}
+	
+	@RequestMapping(value = "/monitor/{id}", method = RequestMethod.GET)
+	public @ResponseBody AgentMonitorInfo monitorIndex(@PathVariable("id")String id){
+		AgentMonitorInfo agentMonitorInfo = machineInstanceService.getMonitorInfo(id);
+		if (agentMonitorInfo.getMemory() == null){
+			throw new RuntimeException("物理机实例agent为运行");
+		}
+		return agentMonitorInfo;
 	}
 	
 	//列表查询

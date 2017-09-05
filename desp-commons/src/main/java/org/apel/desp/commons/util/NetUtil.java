@@ -2,6 +2,8 @@ package org.apel.desp.commons.util;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 import org.apache.curator.shaded.com.google.common.base.Throwables;
 
@@ -14,7 +16,7 @@ public class NetUtil {
 		//获取网卡，获取地址
 		StringBuffer sb = new StringBuffer("");
 		try {
-			byte[] mac = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress();
+			byte[] mac = NetworkInterface.getByInetAddress(getLocalAddress()).getHardwareAddress();
 			
 			for(int i = 0; i < mac.length; i++) {
 				if (i != 0) {
@@ -39,7 +41,7 @@ public class NetUtil {
 	 * 获取本地mac地址(无破折号)
 	 */
 	public static String getLocalPureMac(){
-		return getLocalMac().replaceAll("-", "");
+		return getLocalMac().replaceAll("[- | :]", "");
 	}
 	
 	/**
@@ -56,5 +58,24 @@ public class NetUtil {
 		}
 		return sb.toString();
 	}
+	
+	public static InetAddress getLocalAddress() {
+        try {
+            for (Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces(); interfaces.hasMoreElements();) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                if (networkInterface.isLoopback() || networkInterface.isVirtual() || !networkInterface.isUp()) {
+                    continue;
+                }
+                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+                if (addresses.hasMoreElements()) {
+                    return addresses.nextElement();
+                }
+            }
+        } catch (SocketException e) {
+        	e.printStackTrace();
+        	Throwables.throwIfUnchecked(e);
+        }
+        return null;
+    }
 	
 }

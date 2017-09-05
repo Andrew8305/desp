@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apel.desp.agent.util.SigarUtil;
 import org.apel.desp.commons.consist.SystemConsist;
 import org.apel.desp.commons.consist.ZKNodePath;
 import org.apel.desp.commons.monitor.AgentMonitorInfo;
@@ -102,6 +103,8 @@ public class MonitorServiceImpl implements MonitorService{
 		AgentMonitorInfo zkAgentMonitorInfo = getZkAgentMonitorInfo();
 		zkAgentMonitorInfo.setAgentVersion(agentVersion);
 		zkAgentMonitorInfo.setStatus(SystemConsist.AGENT_STATUS_RUNNING);
+		zkAgentMonitorInfo.setCpus(SigarUtil.calculateCpuInfo());//计算cpu使用率
+		zkAgentMonitorInfo.setMemory(SigarUtil.calculateMemory());//计算内存使用率
 		
 		//检查app状态，如果有宕机现象，则通知，检查的前提是在zk上没有执行命令
 		//如果有执行的命令，不会更新app状态，由命令执行过程之后进行更新，避免定时程序与命令执行冲突

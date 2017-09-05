@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>物理机监控</title>
+  ${jsContext}${appJs}${jquery}${bootstrap}${jqueryUI}${jqGrid}${vue}${ele}${pnotify}
+  <script type="text/javascript" src="${request.contextPath}/js-module/echarts.min.js"></script>
+  <script type="text/javascript" src="${request.contextPath}/js/machineInstance_monitor.js"></script>
+  <link rel="stylesheet" href="${request.contextPath}/css/global.css">
+  <style type="text/css">
+  	.cpu_pie_style{
+  		width:50%;height:200px;float: left;
+  	}
+  </style>
+</head>
+<body>
+	<div id="app">
+		<el-row>
+			<el-col :span="7">
+				<div style="font-size:18px;margin-left:10px;">
+					<img src="${request.contextPath}/images/app.png">
+					${machineInstance.machineInstanceName}
+				</div>
+			</el-col>
+			<el-col :span="5" :offset="12">
+				<el-button type="warning" @click="returnMainList" icon="arrow-left"  size="small">返回主列表</el-button>
+			</el-col>
+		</el-row>
+		
+		<div class="split-line"></div>
+		
+		<el-row>
+			<el-col :span=24>
+				<div style="font-size:15px;padding:5px;width:100%;height:35px;border:1px solid #f3f5f9;background-color: #f3f5f9">
+					cpu使用情况
+				</div>
+			</el-col>
+		</el-row>
+		<el-row>
+			<div>
+				<div id="cpuChart" v-bind:id="'cpuChart'+(index + 1)" class="cpu_pie_style" v-for="(cpu,index) in cpus"></div>
+			</div>
+			<div style="clear: both;"></div>
+		</el-row>
+		<el-row>
+			<el-col :span=24>
+				<div style="font-size:15px;padding:5px;width:100%;height:35px;border:1px solid #f3f5f9;background-color: #f3f5f9">
+					内存使用情况
+				</div>
+			</el-col>
+		</el-row>
+		<el-row>
+			<div id="memChart" style="height:300px;width:600px;"></div>
+		</el-row>
+		
+		
+		
+		
+	</div>
+	
+  	<input type="hidden" value="${machineInstance.id}" id="id" />
+</body>
+
+</html>

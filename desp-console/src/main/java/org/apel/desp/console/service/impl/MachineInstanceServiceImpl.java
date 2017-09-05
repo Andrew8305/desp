@@ -3,6 +3,9 @@ package org.apel.desp.console.service.impl;
 import java.util.List;
 
 import org.apel.desp.commons.consist.SystemConsist;
+import org.apel.desp.commons.consist.ZKNodePath;
+import org.apel.desp.commons.monitor.AgentMonitorInfo;
+import org.apel.desp.commons.util.ZKConnector;
 import org.apel.desp.console.dao.MachineInstanceRepository;
 import org.apel.desp.console.domain.MachineInstance;
 import org.apel.desp.console.service.MachineInstanceService;
@@ -11,15 +14,21 @@ import org.apel.gaia.commons.pager.Operation;
 import org.apel.gaia.commons.pager.PageBean;
 import org.apel.gaia.commons.pager.RelateType;
 import org.apel.gaia.infrastructure.impl.AbstractBizCommonService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
 @Service
 @Transactional
 public class MachineInstanceServiceImpl extends AbstractBizCommonService<MachineInstance, String> implements MachineInstanceService{
 
+	@Autowired
+	private ZKConnector zkConnector;
+	
 	@Override
 	public void pageQueryForUnDeployApp(PageBean pageBean, String appId) {
 		Condition c = new Condition();
@@ -102,6 +111,21 @@ public class MachineInstanceServiceImpl extends AbstractBizCommonService<Machine
 		List<Object> params = Lists.newArrayList();
 		params.add(appPrimary);
 		getRepository().doPager(pageBean, hql, params);
+	}
+
+	@Override
+	public AgentMonitorInfo getMonitorInfo(String id) {
+		MachineInstance machineInstance = findById(id);
+		String agent = machineInstance.getMacAddress().replaceAll("[- | :]", "");
+		AgentMonitorInfo agentMonitorInfo = new AgentMonitorInfo();
+		try {
+			byte[] dataBytes = zkConnector.getClient().getData().forPath(ZKNodePath.ZK_ACTIVE_AGENTS_PATH + "/" + agent);
+			agentMonitorInfo = JSON.parseObject(new String(dataBytes), AgentMonitorInfo.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Throwables.throwIfUnchecked(e);
+		}
+		return agentMonitorInfo;
 	}
 
 }

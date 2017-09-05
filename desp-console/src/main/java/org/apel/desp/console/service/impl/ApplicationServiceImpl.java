@@ -87,7 +87,7 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 			//写入发布流水
 			createDeploySerial(application, mi);
 			
-			agents.append(mi.getMacAddress().replaceAll("-", "") + ",");
+			agents.append(mi.getMacAddress().replaceAll("[- | :]", "") + ",");
 		}
 		if (application != null){
 			//写入命令，操作zk
@@ -290,7 +290,7 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 			}
 			application = appInstance.getApplication();
 			appExecutor.execute(appInstance);
-			agents.append(appInstance.getMachineInstance().getMacAddress().replaceAll("-", "") + ",");
+			agents.append(appInstance.getMachineInstance().getMacAddress().replaceAll("[- | :]", "") + ",");
 		}
 		if (agents.length() != 0){
 			//写入命令，操作zk
@@ -360,7 +360,7 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 		param.put("appId", deploySerial.getApplication().getAppId());
 		param.put("jarRealName", deploySerial.getJarRealName());
 		commandEntity.setParam(JSON.toJSONString(param));
-		commandEntity.setAgents(deploySerial.getMachineInstance().getMacAddress().replaceAll("-", ""));
+		commandEntity.setAgents(deploySerial.getMachineInstance().getMacAddress().replaceAll("[- | :]", ""));
 		commandService.sendCommand(commandEntity);
 	}
 

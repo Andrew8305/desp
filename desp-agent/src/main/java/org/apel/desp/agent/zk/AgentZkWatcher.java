@@ -7,6 +7,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.zookeeper.CreateMode;
 import org.apel.desp.agent.command.DefaultZKCommandCallback;
 import org.apel.desp.agent.command.ZKCommandManager;
+import org.apel.desp.agent.util.SigarUtil;
 import org.apel.desp.commons.consist.SystemConsist;
 import org.apel.desp.commons.consist.ZKNodePath;
 import org.apel.desp.commons.domain.ZKCommand;
@@ -91,6 +92,8 @@ public class AgentZkWatcher implements ApplicationListener<ContextRefreshedEvent
 		AgentMonitorInfo agentMonitorInfo = new AgentMonitorInfo();
 		agentMonitorInfo.setStatus(SystemConsist.AGENT_STATUS_RUNNING);
 		agentMonitorInfo.setAgentVersion(agentVersion);
+		agentMonitorInfo.setCpus(SigarUtil.calculateCpuInfo());
+		agentMonitorInfo.setMemory(SigarUtil.calculateMemory());
 		String monitorInfo = JSON.toJSONString(agentMonitorInfo);
 		try {
 			String agentPath = ZKNodePath.ZK_ACTIVE_AGENTS_PATH + "/" + NetUtil.getLocalPureMac();

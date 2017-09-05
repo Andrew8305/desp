@@ -32,6 +32,14 @@ $(function(){
 			};
 		},
 		methods:{
+			showMonitor: function(){//查看监控
+				var ids = grid.jqGrid ('getGridParam', 'selarrrow');
+				if(ids.length != 1){
+					PlatformUI.message({message: "选择一条要操作的数据!", type: "warning"});
+					return;
+				}
+				location.href = contextPath + "/machineInstance/monitor/index?id=" + ids[0];
+			},
 			compositeSearch: function(){//检索
 				var context = this;
 				grid.jqGrid("setGridParam", {

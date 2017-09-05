@@ -128,8 +128,7 @@ public class WindowsOperator implements OSOperator{
 					InputStream is = p.getInputStream();
 					BufferedReader br = new BufferedReader(new InputStreamReader(is,"GBK"));
 					while (null != (line = br.readLine())){
-						System.out.println(line);
-						LOG.debug(line);
+						LOG.info(line);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

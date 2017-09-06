@@ -60,7 +60,9 @@
 				<div style="font-size:15px;padding:5px;border:1px solid #f3f5f9;">
 					<el-row>
 						<el-col :span="11">状态:</el-col>
-						<el-col :span="11" :offset="2"></el-col>
+						<el-col :span="11" :offset="2">
+							${application.runningInstanceNum!0}/${application.allInstanceNum!0}
+						</el-col>
 					</el-row> 
 				</div>
 			</el-col>

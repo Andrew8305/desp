@@ -43,7 +43,7 @@ public class DelAppCommand implements ZKCommander{
 			public void run() {
 				Map param = JSON.parseObject((zkCommand.getParam()), Map.class);
 				String appId = param.get("appId").toString();
-				if (operationSystemManager.checkAppRuning(appId)){//如果app已经启动，则不做任何操作,否则进行启动
+				if (operationSystemManager.checkAppRuning(appId)){//如果app已经启动，停止app
 					LOG.info("停止应用：" + appId);
 					operationSystemManager.killProcess(operationSystemManager.getPID(appId));
 				}

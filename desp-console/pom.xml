@@ -16,11 +16,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apel</groupId>
-			<artifactId>gaia-property-loader</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apel</groupId>
 			<artifactId>gaia-persist</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>

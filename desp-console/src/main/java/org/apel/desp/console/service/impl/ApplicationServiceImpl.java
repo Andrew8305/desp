@@ -122,6 +122,11 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 			ai.setApplication(application);
 			ai.setMachineInstance(mi);
 			appInstanceRepository.store(ai);
+			
+			//更新应用的部署实例数量
+			int oldNum = application.getAllInstanceNum() == null ? 0 : application.getAllInstanceNum();
+			application.setAllInstanceNum(oldNum + 1);
+			getRepository().update(application);
 		}else{//如果数据库中有关联，直接更新关联状态为部署中
 			AppInstance ai = appInstances.get(0);
 			if (ai.getStatus() != SystemConsist.APPINSTANCE_STATUS_STOPED){
@@ -247,6 +252,12 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 			
 			@Override
 			public void execute(AppInstance appInstance) {
+				//更新应用的部署实例数量
+				int oldNum = appInstance.getApplication().getAllInstanceNum() == null ? 0 : appInstance.getApplication().getAllInstanceNum();
+				appInstance.getApplication()
+					.setAllInstanceNum(oldNum - 1);
+				getRepository().update(appInstance.getApplication());
+				
 				appInstanceRepository.delete(appInstance);//删除运行实例
 			}
 		});
@@ -348,6 +359,11 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 			ai.setApplication(deploySerial.getApplication());
 			ai.setMachineInstance(deploySerial.getMachineInstance());
 			appInstanceRepository.store(ai);
+			
+			//更新应用的部署实例数量
+			int oldNum = deploySerial.getApplication().getAllInstanceNum() == null ? 0 : deploySerial.getApplication().getAllInstanceNum();
+			deploySerial.getApplication().setAllInstanceNum(oldNum + 1);
+			getRepository().update(deploySerial.getApplication());
 		}
 		//发送部署命令
 		//写入命令，操作zk
@@ -363,7 +379,5 @@ public class ApplicationServiceImpl extends AbstractBizCommonService<Application
 		commandEntity.setAgents(deploySerial.getMachineInstance().getMacAddress().replaceAll("[- | :]", ""));
 		commandService.sendCommand(commandEntity);
 	}
-
-	
 
 }

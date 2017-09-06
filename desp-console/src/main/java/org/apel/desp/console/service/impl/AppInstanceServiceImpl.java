@@ -24,6 +24,8 @@ public class AppInstanceServiceImpl extends AbstractBizCommonService<AppInstance
 
 	@Autowired
 	private MachineInstanceRepository machineInstanceRepository;
+	@Autowired
+	private AppInstanceRepository appInstanceRepository;
 	
 	@Override
 	public void updateStatus(String macAddress, List<ApplicationMonitorInfo> apps) {
@@ -39,6 +41,11 @@ public class AppInstanceServiceImpl extends AbstractBizCommonService<AppInstance
 					for (AppInstance appInstance : appInstances) {
 						appInstance.setStatus(appMonitorInfo.getStatus());
 						getRepository().update(appInstance);
+						
+						//更新应用运行实例的数量
+						int appRunningNum = appInstanceRepository.countByApplicationIdAndStatus(appInstance.getApplication().getId(), SystemConsist.APPINSTANCE_STATUS_RUNNING);
+						appInstance.getApplication().setRunningInstanceNum(appRunningNum);
+						getRepository().update(appInstance.getApplication());
 					}
 				}
 			}

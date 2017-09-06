@@ -73,7 +73,10 @@ public class ConsoleZkWatcher implements ApplicationListener<ContextRefreshedEve
 				@Override
 				public void childEvent(CuratorFramework arg0,
 						PathChildrenCacheEvent event) throws Exception {
-					String macAddress = NetUtil.macPureToRaw(ZKNodePath.getLeafNodeName(event.getData().getPath()));
+					String macAddress  = "";
+					if (event.getData() != null){
+						macAddress = NetUtil.macPureToRaw(ZKNodePath.getLeafNodeName(event.getData().getPath()));
+					}
 					switch (event.getType()) {
 					case CHILD_ADDED://监听agents节点个数变化，如果有新增，则更新物理机实例的状态为运行中
 						

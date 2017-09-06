@@ -47,7 +47,7 @@ public class MonitorServiceImpl implements MonitorService{
 			byte[] dataBytes = zkConnector.getClient().getData().forPath(LOCAL_AGENT_PATH);
 			agentMonitorInfo = JSON.parseObject(new String(dataBytes), AgentMonitorInfo.class);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("获取不到节点数据:" + e.getMessage());
 			Throwables.throwIfUnchecked(e);
 		}
 		return agentMonitorInfo;

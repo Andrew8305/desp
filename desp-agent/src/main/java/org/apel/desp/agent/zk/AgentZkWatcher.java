@@ -5,6 +5,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.data.Stat;
 import org.apel.desp.agent.command.DefaultZKCommandCallback;
 import org.apel.desp.agent.command.ZKCommandManager;
 import org.apel.desp.agent.util.SigarUtil;
@@ -48,8 +49,41 @@ public class AgentZkWatcher implements ApplicationListener<ContextRefreshedEvent
 		//发送agent的基础信息到zk，代表agent已经启动
 		sendAgentStatus();
 		
+		//监听根节点，在重连时，建立agent节点
+		watchRootChange();
+		
 		//监听console向agent发出的命令(来一个命令执行一个命令)
 		watchCommandsChange();
+	}
+	
+	@SuppressWarnings("resource")
+	private void watchRootChange(){
+		try {
+			CuratorFramework client = zkConnector.getClient();
+			PathChildrenCache childrenCache = new PathChildrenCache(client,
+					ZKNodePath.ZK_ROOT_PATH, false);
+			childrenCache.start();
+			childrenCache.getListenable()
+			.addListener(new PathChildrenCacheListener() {
+				@Override
+				public void childEvent(CuratorFramework arg0,
+						PathChildrenCacheEvent event) throws Exception {
+					switch (event.getType()) {
+					case CONNECTION_RECONNECTED://重连时重建agent临时节点
+						Stat stat = client.checkExists().forPath(ZKNodePath.ZK_ACTIVE_AGENTS_PATH + "/" + NetUtil.getLocalPureMac());
+						if (stat == null){
+							sendAgentStatus();
+						}
+						break;
+					default:
+						break;
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			Throwables.throwIfUnchecked(e);
+		}
 	}
 	
 	@SuppressWarnings("resource")

@@ -15,4 +15,6 @@ public interface AppInstanceRepository extends CommonRepository<AppInstance, Str
 			String appPrimary, String agentStatusRunning,
 			int appinstanceStatusStoped);
 	
+	int countByApplicationIdAndStatus(String appPrimary, int status);
+	
 }

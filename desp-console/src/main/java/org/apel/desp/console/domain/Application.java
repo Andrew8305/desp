@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -44,5 +45,7 @@ public class Application {
 	private String jarRealName;
 	//jar远程路径
 	private String remoteJarPath;
+	@Version
+	private Long vers;
 
 }

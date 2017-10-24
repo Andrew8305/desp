@@ -15,5 +15,5 @@
 	
 	<context:component-scan base-package="org.apel.desp.console" />
  	<dubbo:registry protocol="zookeeper" address="${dubbo.zookeeper-address}" />
-	
+	<dubbo:protocol name="dubbo" port="${dubbo.port}" />
 </beans>

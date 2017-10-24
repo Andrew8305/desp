@@ -12,5 +12,9 @@
 		<module>desp-console</module>
 		<module>desp-agent</module>
 		<module>desp-commons</module>
+		<module>desp-console-dubbo</module>
+		<module>desp-dubbokeeper-admin</module>
+		<module>desp-dubbokeeper-storage</module>
+		<module>desp-dubbokeeper-storage-mysql</module>
 	</modules>
 </project>

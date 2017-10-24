@@ -16,3 +16,15 @@
 /desp-agent/logs
 /desp-agent/data
 /desp-agent/apps
+/desp-console-dubbo/.project
+/desp-console-dubbo/.settings
+/desp-console-dubbo/.classpath
+/desp-dubbokeeper-admin/.project
+/desp-dubbokeeper-admin/.settings
+/desp-dubbokeeper-admin/.classpath
+/desp-dubbokeeper-storage/.project
+/desp-dubbokeeper-storage/.settings
+/desp-dubbokeeper-storage/.classpath
+/desp-dubbokeeper-storage-mysql/.project
+/desp-dubbokeeper-storage-mysql/.settings
+/desp-dubbokeeper-storage-mysql/.classpath
